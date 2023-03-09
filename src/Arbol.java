@@ -1,13 +1,22 @@
 
-public class Arbol<T> {
-	public Comparable elemento;
-	public Arbol izquierda;
-	public Arbol derecha;
+public class Arbol<T extends Comparable> {
+	public T elemento;
+	public Arbol<T> izquierda;
+	public Arbol<T> derecha;
 	
-	public Arbol(T elemento,Arbol izquierda,Arbol derecha) {
-		this.elemento=(Comparable)elemento;
+	public Arbol(T elemento,Arbol<T> izquierda,Arbol<T> derecha) {
+		this.elemento=elemento;
 		this.izquierda=izquierda;
 		this.derecha=derecha;
+	}
+	
+	public int depth() {
+		int izq=1;
+		int der=1;
+		if(izquierda!= null)izq+=izquierda.depth();
+		if(derecha!=null)der+=derecha.depth();
+		if(izq>der)return izq;
+		else return der;
 	}
 	
 	public boolean add(T elemento) {
@@ -69,9 +78,12 @@ public class Arbol<T> {
 	
 	public String toStringArbol() {
 		String res="";
-		res+=elemento.toString();
-		if(izquierda!=null) res=res+"\n"+izquierda.toString();			
-		if(derecha!=null) res=res+"\n		"+derecha.toString();
+		for(int i=0;i<depth();i++)res+="	";
+		if(izquierda!=null) {
+			if(derecha!=null) res=res+elemento.toString()+"\n"+izquierda.toStringArbol()+"	"+derecha.toStringArbol();
+			else res=res+elemento.toString()+"\n"+izquierda.toStringArbol();
+		}else if(derecha!=null) res=res+"	"+elemento.toString()+"\n"+"	"+derecha.toStringArbol();
+		else res=res+elemento.toString();
 		return res;
 	}
 	
